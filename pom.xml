@@ -65,6 +65,7 @@
 
     <build>
         <defaultGoal>clean install</defaultGoal>
+        <finalName>app</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -176,6 +177,11 @@
                                 </labels>
                             </build>
                             <name>dweomer/${project.artifactId}:${project.version}</name>
+                            <run>
+                                <ports>
+                                    <port>example.port:8080</port>
+                                </ports>
+                            </run>
                         </image>
                     </images>
                 </configuration>

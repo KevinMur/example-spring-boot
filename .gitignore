@@ -24,3 +24,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+
+### SonarQube/SonarLint
+.sonar/
+.sonarlint/

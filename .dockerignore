@@ -2,3 +2,5 @@
 *.iml
 *.iws
 target/
+.sonar/
+.sonarlint/
