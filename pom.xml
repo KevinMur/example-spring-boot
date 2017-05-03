@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.3.5.RELEASE</version>
+        <version>1.5.2.RELEASE</version>
     </parent>
 
     <groupId>io.dweomer.example</groupId>
     <artifactId>example-spring-boot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>example-spring-boot</name>
@@ -22,24 +22,26 @@
 
     <organization>
         <name>Jacob Blain Christen</name>
-        <url>https://github.com/dweomer</url>
+        <url>https://keybase.io/dweomer</url>
     </organization>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com/dweomer/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/dweomer/${project.artifactId}.git</developerConnection>
-        <url>${project.url}</url>
+        <connection>scm:git:https://github.com/dweomer/example-spring-boot.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/dweomer/example-spring-boot.git</developerConnection>
+        <url>https://github.com/dweomer/example-spring-boot</url>
+        <tag>master</tag>
     </scm>
 
     <properties>
-        <application.root>/${project.artifactId}</application.root>
         <dependency.junit.version>4.12</dependency.junit.version>
         <docker.build.directory>${project.build.directory}/docker/local</docker.build.directory>
+        <docker.skip>true</docker.skip>
         <java.version>1.8</java.version>
-        <plugin.codehaus-versions.version>2.2</plugin.codehaus-versions.version>
-        <plugin.fabric8io-docker.version>0.15.3</plugin.fabric8io-docker.version>
+        <plugin.fabric8io-docker.version>0.20.1</plugin.fabric8io-docker.version>
+        <plugin.maven-compiler.version>3.6.1</plugin.maven-compiler.version>
         <plugin.maven-enforcer.version>1.4.1</plugin.maven-enforcer.version>
-        <plugin.maven-surefire.version>2.19.1</plugin.maven-surefire.version>
+        <plugin.maven-resources.version>3.0.2</plugin.maven-resources.version>
+        <plugin.maven-surefire.version>2.20</plugin.maven-surefire.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -63,7 +65,6 @@
 
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>${project.artifactId}</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -73,18 +74,23 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${plugin.maven-compiler.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>${plugin.maven-enforcer.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${plugin.maven-surefire.version}</version>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${plugin.maven-resources.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>${plugin.codehaus-versions.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${plugin.maven-surefire.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -138,6 +144,7 @@
                                     <directory>src/main/docker</directory>
                                     <filtering>true</filtering>
                                     <excludes>
+                                        <exclude>**/.dockerignore</exclude>
                                         <exclude>**/.gitignore</exclude>
                                     </excludes>
                                 </resource>
@@ -162,8 +169,13 @@
                                 <tags>
                                     <tag>${project.version}</tag>
                                 </tags>
+                                <labels>
+                                    <maven.project.groupId>${project.groupId}</maven.project.groupId>
+                                    <maven.project.artifactId>${project.artifactId}</maven.project.artifactId>
+                                    <maven.project.version>${project.version}</maven.project.version>
+                                </labels>
                             </build>
-                            <name>dweomer/${project.artifactId}</name>
+                            <name>dweomer/${project.artifactId}:${project.version}</name>
                         </image>
                     </images>
                 </configuration>
@@ -198,4 +210,42 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>detected-docker-socket</id>
+            <activation>
+                <file>
+                    <exists>/var/run/docker.sock</exists>
+                </file>
+            </activation>
+            <properties>
+                <docker.skip>false</docker.skip>
+                <!--<docker.host>unix:///var/run/docker.sock</docker.host>-->
+            </properties>
+        </profile>
+        <profile>
+            <id>detected-docker-host</id>
+            <activation>
+                <property>
+                    <name>env.DOCKER_HOST</name>
+                </property>
+            </activation>
+            <properties>
+                <docker.skip>false</docker.skip>
+                <!--<docker.host>${env.DOCKER_HOST}</docker.host>-->
+            </properties>
+        </profile>
+        <profile>
+            <id>provided-docker-host</id>
+            <activation>
+                <property>
+                    <name>docker.host</name>
+                </property>
+            </activation>
+            <properties>
+                <docker.skip>false</docker.skip>
+                <docker.host>unix:///var/run/docker.sock</docker.host>
+            </properties>
+        </profile>
+    </profiles>
 </project>

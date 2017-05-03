@@ -12,21 +12,25 @@ import java.util.TreeMap;
 @SpringBootApplication
 @RestController
 public class ExampleApplication {
+    static final String PATH_HOME = "/";
+    static final String PATH_DERP = "/derp";
+    static final String PATH_SYSTEM_PROPERTIES = "/_/properties";
+    static final String PATH_ENVIRONMENT_VARIABLES = "/_/environment";
 
     @Value("${io.dweomer.example.derp}")
     private String derp;
 
-    @RequestMapping(path = "/", produces = "text/plain")
+    @RequestMapping(produces = "text/plain", path = PATH_HOME)
     public String home() {
         return "Hello Docker World";
     }
 
-    @RequestMapping(path = "/derp", produces = "text/plain")
+    @RequestMapping(produces = "text/plain", path = PATH_DERP)
     public String derp() {
         return derp;
     }
 
-    @RequestMapping(path = "/_/properties", produces = "text/plain")
+    @RequestMapping(produces = "text/plain", path = PATH_SYSTEM_PROPERTIES)
     public String systemProperties() {
         final Map<String,String> sortedProperties = new TreeMap<>();
 
@@ -43,7 +47,7 @@ public class ExampleApplication {
         return buf.toString();
     }
 
-    @RequestMapping(path = "/_/environment", produces = "text/plain")
+    @RequestMapping(produces = "text/plain", path = PATH_ENVIRONMENT_VARIABLES)
     public String environmentVariables() {
         final Map<String,String> sortedEnvironmentVariables = new TreeMap<>(System.getenv());
 

@@ -2,7 +2,7 @@
 
 Adapted from [the Spring Boot with Docker guide](https://spring.io/guides/gs/spring-boot-docker/) to use [the Docker Maven Plugin from fabric8.io](https://github.io/fabric8io/docker-maven-plugin).
 
-#### Copyright &copy; 2016 [Jacob Blain Christen](https://github.com/dweomer)
+#### Copyright &copy; 2017 [Jacob Blain Christen](https://github.com/dweomer)
 
 > Licensed under the Apache License, Version 2.0 (the "License");
 > you may not use this file except in compliance with the License.

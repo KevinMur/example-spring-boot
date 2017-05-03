@@ -10,4 +10,14 @@ public class ExampleApplicationTest {
         assertEquals("Hello Docker World", new ExampleApplication().home());
     }
 
+    @Test
+    public void testEnvironmentVariables() {
+        assertNotNull(new ExampleApplication().environmentVariables());
+    }
+
+    @Test
+    public void testSystemProperties() {
+        assertNotNull(new ExampleApplication().systemProperties());
+    }
+
 }
